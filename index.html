@@ -1,0 +1,1362 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blent Digital — Sistema de Adquisición de Clientes</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --orange: #FF7300;
+  --orange-dark: #e06200;
+  --orange-dim: rgba(255,115,0,0.09);
+  --orange-border: rgba(255,115,0,0.18);
+  --black: #080808;
+  --black2: #0e0e0e;
+  --black3: #131313;
+  --border: rgba(255,255,255,0.06);
+  --muted: rgba(255,255,255,0.32);
+  --radius: 10px;
+  --radius-sm: 6px;
+  --radius-lg: 14px;
+  --content-width: 900px;
+  --nav-h: 68px;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--black);
+  color: #fff;
+  overflow-x: hidden;
+}
+
+/* ── PROGRESS BAR ── */
+#progress-bar {
+  position: fixed;
+  top: 0; left: 0;
+  height: 2px;
+  width: 0%;
+  background: var(--orange);
+  z-index: 200;
+  transition: width 0.2s ease;
+  box-shadow: 0 0 8px rgba(255,115,0,0.5);
+}
+
+/* ── NAVBAR ── */
+nav {
+  position: fixed;
+  top: 2px; left: 0; right: 0;
+  height: var(--nav-h);
+  background: rgba(8,8,8,0.88);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 clamp(24px, 5vw, 72px);
+  z-index: 100;
+}
+
+.nav-logo {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 22px;
+  letter-spacing: 4px;
+  color: #fff;
+  text-decoration: none;
+  cursor: pointer;
+}
+.nav-logo span { color: var(--orange); }
+
+.nav-cta {
+  background: var(--orange);
+  color: #000;
+  border: none;
+  padding: 10px 22px;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 500;
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  transition: background 0.2s, transform 0.1s;
+}
+.nav-cta:hover { background: var(--orange-dark); transform: translateY(-1px); }
+
+/* ── WRAPPER ── */
+.wrap {
+  width: 100%;
+  max-width: var(--content-width);
+  margin: 0 auto;
+  padding: 0 clamp(24px, 4vw, 48px);
+}
+
+/* ── SECTIONS ── */
+section {
+  padding: 112px clamp(24px, 4vw, 48px) 96px;
+  border-bottom: 1px solid var(--border);
+  position: relative;
+}
+
+section > .wrap {
+  padding: 0;
+}
+
+.sec-eyebrow {
+  font-size: 9px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--orange);
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.sec-eyebrow::before {
+  content: '';
+  width: 20px; height: 1px;
+  background: var(--orange);
+  flex-shrink: 0;
+}
+
+.sec-h2 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(34px, 4vw, 52px);
+  line-height: 1.05;
+  letter-spacing: 1px;
+  margin-bottom: 40px;
+}
+
+/* ── HERO ── */
+#hero {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-top: calc(var(--nav-h) + 64px);
+  overflow: hidden;
+}
+
+.hero-grid {
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(rgba(255,115,0,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,115,0,0.03) 1px, transparent 1px);
+  background-size: 52px 52px;
+  pointer-events: none;
+}
+.hero-glow {
+  position: absolute;
+  top: -80px; right: -80px;
+  width: 600px; height: 600px;
+  background: radial-gradient(circle, rgba(255,115,0,0.06) 0%, transparent 65%);
+  pointer-events: none;
+}
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--orange-dim);
+  border: 1px solid var(--orange-border);
+  color: var(--orange);
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  padding: 6px 14px;
+  border-radius: var(--radius-sm);
+  margin-bottom: 32px;
+}
+.badge-dot {
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: var(--orange);
+  box-shadow: 0 0 6px var(--orange);
+  animation: blink 2s ease-in-out infinite;
+}
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
+
+.hero-h1 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(52px, 6.5vw, 88px);
+  line-height: 0.95;
+  letter-spacing: 1px;
+  margin-bottom: 28px;
+}
+.h1-ora { color: var(--orange); }
+.h1-serif {
+  font-family: 'Instrument Serif', serif;
+  font-style: italic;
+  color: var(--orange);
+}
+.h1-dim { color: rgba(255,255,255,0.18); }
+
+.hero-sub {
+  font-size: 15px;
+  font-weight: 300;
+  color: rgba(255,255,255,0.42);
+  max-width: 480px;
+  line-height: 1.85;
+  margin-bottom: 44px;
+}
+
+.hero-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 64px;
+}
+
+.btn-primary {
+  background: var(--orange);
+  color: #000;
+  border: none;
+  padding: 14px 30px;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 500;
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
+}
+.btn-primary:hover {
+  background: var(--orange-dark);
+  transform: translateY(-1px);
+  box-shadow: 0 8px 24px rgba(255,115,0,0.22);
+}
+
+.btn-ghost {
+  background: transparent;
+  color: rgba(255,255,255,0.35);
+  border: 1px solid rgba(255,255,255,0.1);
+  padding: 14px 30px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  transition: all 0.2s;
+}
+.btn-ghost:hover {
+  border-color: rgba(255,115,0,0.3);
+  color: rgba(255,255,255,0.6);
+}
+
+.hero-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.hstat {
+  background: var(--black2);
+  padding: 24px 28px;
+  transition: background 0.2s;
+}
+.hstat:hover { background: var(--black3); }
+.hstat-num {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 36px;
+  color: var(--orange);
+  line-height: 1;
+  margin-bottom: 6px;
+  letter-spacing: 1px;
+}
+.hstat-label {
+  font-size: 9px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.2);
+  line-height: 1.5;
+}
+
+/* ── PROBLEMA ── */
+#problema { background: #0a0a0a; }
+
+.prob-intro {
+  font-size: 14px;
+  font-weight: 300;
+  color: var(--muted);
+  max-width: 560px;
+  line-height: 1.85;
+  margin-bottom: 48px;
+  margin-top: -16px;
+}
+
+.prob-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.prob-card {
+  background: var(--black2);
+  border: 1px solid var(--border);
+  padding: 32px 28px;
+  border-radius: var(--radius);
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.25s, background 0.25s;
+}
+.prob-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: var(--orange);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.35s ease;
+  border-radius: var(--radius) var(--radius) 0 0;
+}
+.prob-card:hover { border-color: var(--orange-border); background: #111; }
+.prob-card:hover::before { transform: scaleX(1); }
+
+.prob-num {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 44px;
+  color: rgba(255,115,0,0.09);
+  line-height: 1;
+  margin-bottom: 14px;
+  letter-spacing: -1px;
+  transition: color 0.25s;
+}
+.prob-card:hover .prob-num { color: rgba(255,115,0,0.18); }
+.prob-card h3 { font-size: 14px; font-weight: 500; color: #fff; margin-bottom: 10px; }
+.prob-card p { font-size: 13px; font-weight: 300; color: var(--muted); line-height: 1.75; }
+
+/* ── VSL ── */
+#vsl { background: var(--black); }
+
+.vsl-frame {
+  width: 100%;
+  aspect-ratio: 16/9;
+  background: var(--black3);
+  border: 1px solid var(--orange-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius);
+  margin-top: 36px;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+.vsl-frame:hover {
+  border-color: rgba(255,115,0,0.4);
+  box-shadow: 0 0 48px rgba(255,115,0,0.07);
+}
+.vsl-scanlines {
+  position: absolute; inset: 0;
+  background: repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.03) 2px,rgba(0,0,0,0.03) 4px);
+  pointer-events: none; border-radius: var(--radius);
+}
+.vsl-corner { position: absolute; width: 16px; height: 16px; }
+.vsl-corner.tl { top:14px; left:14px; border-top:1.5px solid rgba(255,115,0,0.4); border-left:1.5px solid rgba(255,115,0,0.4); border-radius:3px 0 0 0; }
+.vsl-corner.tr { top:14px; right:14px; border-top:1.5px solid rgba(255,115,0,0.4); border-right:1.5px solid rgba(255,115,0,0.4); border-radius:0 3px 0 0; }
+.vsl-corner.bl { bottom:14px; left:14px; border-bottom:1.5px solid rgba(255,115,0,0.4); border-left:1.5px solid rgba(255,115,0,0.4); border-radius:0 0 0 3px; }
+.vsl-corner.br { bottom:14px; right:14px; border-bottom:1.5px solid rgba(255,115,0,0.4); border-right:1.5px solid rgba(255,115,0,0.4); border-radius:0 0 3px 0; }
+.vsl-tag { position:absolute; top:16px; left:50%; transform:translateX(-50%); font-size:8px; letter-spacing:3px; text-transform:uppercase; color:rgba(255,115,0,0.28); white-space:nowrap; }
+.vsl-play {
+  width: 70px; height: 70px;
+  border: 1.5px solid rgba(255,115,0,0.45);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  position: relative; z-index: 2;
+  transition: all 0.25s;
+}
+.vsl-frame:hover .vsl-play {
+  background: var(--orange); border-color: var(--orange);
+  transform: scale(1.1);
+  box-shadow: 0 0 28px rgba(255,115,0,0.3);
+}
+.vsl-play svg { fill: var(--orange); transition: fill 0.25s; margin-left: 5px; }
+.vsl-frame:hover .vsl-play svg { fill: #000; }
+.vsl-meta {
+  display: flex; align-items: center; gap: 16px;
+  margin-top: 14px;
+}
+.vsl-duration {
+  font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
+  color: rgba(255,255,255,0.18);
+  display: flex; align-items: center; gap: 7px;
+}
+.vsl-duration::before { content:'▶'; color:rgba(255,115,0,0.35); font-size:7px; }
+.vsl-sep { width:1px; height:11px; background:var(--border); }
+.vsl-note { font-size:10px; color:rgba(255,255,255,0.13); letter-spacing:0.5px; }
+
+/* ── SISTEMA ── */
+#sistema { background: #0a0a0a; }
+
+.steps {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  margin-top: 8px;
+}
+.step-row {
+  display: flex; align-items: stretch;
+  border-bottom: 1px solid var(--border);
+  transition: background 0.2s;
+}
+.step-row:last-child { border-bottom: none; }
+.step-row:hover { background: rgba(255,115,0,0.03); }
+.step-row.hl { background: rgba(255,115,0,0.05); }
+
+.step-n {
+  width: 68px; min-width: 68px;
+  display: flex; align-items: center; justify-content: center;
+  border-right: 1px solid var(--border);
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 22px;
+  color: rgba(255,115,0,0.18);
+  transition: color 0.2s;
+  padding: 28px 0;
+}
+.step-row:hover .step-n,
+.step-row.hl .step-n { color: var(--orange); }
+
+.step-body { padding: 28px 32px; flex: 1; }
+.step-body h3 { font-size: 14px; font-weight: 500; color: #fff; margin-bottom: 8px; }
+.step-body p { font-size: 13px; font-weight: 300; color: var(--muted); line-height: 1.75; }
+.step-tag {
+  display: inline-block; margin-top: 10px;
+  font-size: 9px; letter-spacing: 2px; text-transform: uppercase;
+  color: rgba(255,115,0,0.45);
+  border: 1px solid rgba(255,115,0,0.18);
+  padding: 3px 9px; border-radius: var(--radius-sm);
+}
+
+/* ── PARA QUIÉN ── */
+#paraquien { background: var(--black); }
+
+.fit-list { margin-top: 8px; }
+.fit-row {
+  display: flex; align-items: flex-start; gap: 16px;
+  padding: 20px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  transition: padding-left 0.2s;
+}
+.fit-row:last-child { border-bottom: none; }
+.fit-row:hover { padding-left: 6px; }
+.fit-icon { font-size: 13px; font-weight: 600; min-width: 18px; margin-top: 2px; flex-shrink: 0; }
+.fit-icon.yes { color: var(--orange); }
+.fit-icon.no { color: rgba(255,255,255,0.12); }
+.fit-text { font-size: 14px; font-weight: 300; color: rgba(255,255,255,0.5); line-height: 1.75; transition: color 0.2s; }
+.fit-row:hover .fit-text { color: rgba(255,255,255,0.68); }
+.fit-text strong { color: #fff; font-weight: 500; }
+.fit-row.no-fit .fit-text { color: rgba(255,255,255,0.15); }
+
+/* ── AGENDA ── */
+#agenda { background: #0a0a0a; }
+
+.agenda-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.1fr;
+  gap: 56px;
+  align-items: start;
+  margin-top: 8px;
+}
+
+.agenda-copy p {
+  font-size: 14px; font-weight: 300;
+  color: rgba(255,255,255,0.38);
+  line-height: 1.9; margin-bottom: 16px;
+}
+.agenda-pill {
+  display: inline-flex; align-items: center; gap: 9px;
+  margin-top: 24px;
+  padding: 13px 18px;
+  border: 1px solid var(--orange-border);
+  background: var(--orange-dim);
+  border-radius: var(--radius-sm);
+}
+.agenda-pill-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--orange); box-shadow: 0 0 7px var(--orange);
+  flex-shrink: 0; animation: blink 2s ease-in-out infinite;
+}
+.agenda-pill p {
+  font-size: 11px; font-weight: 500; letter-spacing: 0.8px;
+  color: var(--orange) !important; margin: 0 !important; line-height: 1.4 !important;
+}
+
+.form-box {
+  background: var(--black2);
+  border: 1px solid var(--orange-border);
+  padding: 36px;
+  border-radius: var(--radius-lg);
+}
+
+.fl {
+  display: block; font-size: 9px; letter-spacing: 2.5px;
+  text-transform: uppercase; color: rgba(255,255,255,0.22);
+  margin-bottom: 7px; margin-top: 22px;
+}
+.fl:first-child { margin-top: 0; }
+
+.fi {
+  width: 100%; background: transparent; border: none;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  padding: 10px 0; font-size: 14px; font-weight: 300; color: #fff;
+  font-family: 'DM Sans', sans-serif; outline: none; transition: border-color 0.2s;
+}
+.fi:focus { border-bottom-color: var(--orange); }
+.fi::placeholder { color: rgba(255,255,255,0.11); }
+
+.form-divider { height: 1px; background: var(--border); margin: 24px 0; }
+
+.form-submit {
+  width: 100%;
+  background: var(--orange); color: #000; border: none;
+  padding: 16px; font-family: 'DM Sans', sans-serif;
+  font-weight: 500; font-size: 10px; letter-spacing: 2.5px;
+  text-transform: uppercase; cursor: pointer; border-radius: var(--radius-sm);
+  transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
+}
+.form-submit:hover {
+  background: var(--orange-dark); transform: translateY(-1px);
+  box-shadow: 0 8px 24px rgba(255,115,0,0.2);
+}
+.form-note {
+  text-align: center; font-size: 10px;
+  color: rgba(255,255,255,0.11); margin-top: 10px; line-height: 1.6;
+}
+
+/* ── FOOTER ── */
+footer {
+  padding: 28px clamp(24px, 4vw, 48px);
+  border-top: 1px solid var(--border);
+  background: var(--black2);
+}
+.footer-inner {
+  max-width: var(--content-width);
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.footer-logo {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 17px; letter-spacing: 4px;
+  color: rgba(255,255,255,0.22);
+}
+.footer-logo span { color: var(--orange); }
+.footer-copy { font-size: 10px; color: rgba(255,255,255,0.13); letter-spacing: 0.3px; }
+
+
+
+/* ── SMART QUALIFIER FORM ── */
+.sq-steps {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  margin-bottom: 28px;
+}
+.sq-step {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px; font-weight: 500;
+  color: rgba(255,255,255,0.3);
+  transition: all 0.3s;
+  flex-shrink: 0;
+}
+.sq-step.active {
+  background: var(--orange);
+  border-color: var(--orange);
+  color: #000;
+  font-weight: 700;
+  box-shadow: 0 0 10px rgba(255,115,0,0.4);
+}
+.sq-step.done {
+  background: rgba(255,115,0,0.2);
+  border-color: rgba(255,115,0,0.4);
+  color: var(--orange);
+}
+.sq-step-line {
+  flex: 1;
+  height: 1px;
+  background: rgba(255,255,255,0.08);
+  max-width: 28px;
+}
+
+.sq-panel { display: none; }
+.sq-panel.active { display: block; }
+
+.sq-q {
+  font-size: 14px;
+  font-weight: 300;
+  color: rgba(255,255,255,0.65);
+  line-height: 1.65;
+  margin-bottom: 20px;
+}
+.sq-q strong { color: #fff; font-weight: 500; font-size: 15px; }
+
+.sq-opts {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.sq-opt {
+  padding: 12px 16px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-weight: 300;
+  color: rgba(255,255,255,0.75);
+  cursor: pointer;
+  transition: all 0.18s;
+  line-height: 1.4;
+}
+.sq-opt:hover {
+  border-color: rgba(255,115,0,0.35);
+  background: rgba(255,115,0,0.06);
+  color: #fff;
+}
+.sq-opt.selected {
+  border-color: var(--orange);
+  background: rgba(255,115,0,0.1);
+  color: #fff;
+  font-weight: 400;
+}
+
+.sq-next {
+  width: 100%;
+  background: var(--orange);
+  color: #000;
+  border: none;
+  padding: 14px;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 500;
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  transition: background 0.2s, transform 0.1s, opacity 0.2s;
+  margin-top: 4px;
+}
+.sq-next:hover { background: var(--orange-dark); transform: translateY(-1px); }
+.sq-next:disabled { opacity: 0.3; cursor: not-allowed; transform: none; }
+
+/* RESULT */
+.sq-result-icon {
+  font-size: 36px;
+  text-align: center;
+  margin-bottom: 12px;
+}
+.sq-result-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 24px;
+  letter-spacing: 1px;
+  color: #fff;
+  text-align: center;
+  margin-bottom: 10px;
+  line-height: 1.2;
+}
+.sq-result-sub {
+  font-size: 13px;
+  font-weight: 300;
+  color: rgba(255,255,255,0.65);
+  text-align: center;
+  line-height: 1.75;
+  margin-bottom: 22px;
+}
+
+/* ── TESTIMONIOS ── */
+#testimonios { background: #0a0a0a; }
+
+.test-summary {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 40px;
+  margin-top: -16px;
+  padding: 18px 22px;
+  background: var(--black2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  flex-wrap: wrap;
+}
+.test-big { font-size: 20px; color: var(--orange); letter-spacing: 2px; }
+.test-pct { font-size: 12px; font-weight: 500; color: #fff; margin-left: 10px; }
+.test-summary-score { display: flex; align-items: center; }
+.test-summary-sep { width: 1px; height: 28px; background: var(--border); flex-shrink: 0; }
+.test-summary-text { font-size: 12px; font-weight: 300; color: rgba(255,255,255,0.5); letter-spacing: 0.3px; }
+
+.test-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 36px;
+}
+
+.test-card {
+  background: var(--black2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  transition: border-color 0.2s, background 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+.test-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1.5px;
+  background: var(--orange);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.35s ease;
+}
+.test-card:hover { border-color: var(--orange-border); background: #111; }
+.test-card:hover::before { transform: scaleX(1); }
+
+.test-card.test-featured {
+  grid-column: span 1;
+  border-color: var(--orange-border);
+  background: rgba(255,115,0,0.04);
+}
+.test-card.test-featured::before { transform: scaleX(1); }
+
+.test-stars { font-size: 13px; color: var(--orange); letter-spacing: 2px; }
+
+.test-quote {
+  font-size: 13px;
+  font-weight: 300;
+  color: rgba(255,255,255,0.82);
+  line-height: 1.75;
+  flex: 1;
+  font-style: italic;
+}
+
+.test-author {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: auto;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+}
+.test-avatar {
+  width: 34px; height: 34px;
+  border-radius: 50%;
+  background: var(--orange-dim);
+  border: 1px solid var(--orange-border);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 11px; color: var(--orange);
+  letter-spacing: 1px; flex-shrink: 0;
+}
+.test-name { font-size: 12px; font-weight: 500; color: #fff; }
+.test-role { font-size: 10px; color: rgba(255,255,255,0.38); letter-spacing: 0.3px; margin-top: 1px; }
+
+.test-cta { text-align: center; }
+
+@media (max-width: 720px) {
+  .test-grid { grid-template-columns: 1fr; }
+  .test-card.test-featured { grid-column: span 1; }
+  .test-summary { flex-direction: column; align-items: flex-start; gap: 10px; }
+  .test-summary-sep { display: none; }
+}
+
+/* ── FADE IN ── */
+.fi-anim {
+  opacity: 0; transform: translateY(20px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.fi-anim.visible { opacity: 1; transform: translateY(0); }
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar { width: 3px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(255,115,0,0.18); border-radius: 99px; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 720px) {
+  :root { --nav-h: 60px; }
+  section { padding: 88px clamp(20px, 5vw, 32px) 72px; }
+  .hero-h1 { font-size: clamp(40px, 10vw, 64px); }
+  .hero-sub { max-width: 100%; }
+  .hero-stats { grid-template-columns: repeat(2, 1fr); }
+  .prob-grid { grid-template-columns: 1fr; }
+  .agenda-grid { grid-template-columns: 1fr; gap: 36px; }
+  .footer-inner { flex-direction: column; text-align: center; }
+}
+
+@media (max-width: 440px) {
+  .hero-h1 { font-size: clamp(34px, 11vw, 52px); }
+  .hero-stats { grid-template-columns: 1fr 1fr; }
+  .form-box { padding: 24px 20px; }
+  .step-body { padding: 22px 20px; }
+}
+</style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo" onclick="window.scrollTo({top:0,behavior:'smooth'})">BLENT<span>.</span></div>
+  <button class="nav-cta" onclick="document.getElementById('agenda').scrollIntoView({behavior:'smooth'})">
+    Agendar diagnóstico
+  </button>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-glow"></div>
+  <div class="wrap">
+    <div class="hero-badge fi-anim">
+      <div class="badge-dot"></div>
+      Sistema de Adquisición · Blent Digital
+    </div>
+
+    <h1 class="hero-h1 fi-anim" style="transition-delay:.08s">
+      Tu negocio<br>
+      no necesita<br>
+      <span class="h1-ora">más ads.</span><br>
+      <span class="h1-dim">Necesita una</span><br>
+      <span class="h1-serif">máquina</span> que venda.
+    </h1>
+
+    <p class="hero-sub fi-anim" style="transition-delay:.16s">
+      Construimos el sistema completo de adquisición: creatividades que filtran,
+      un video que convierte y un proceso que llena tu agenda de reuniones
+      con gente que ya quiere comprar.
+    </p>
+
+    <div class="hero-actions fi-anim" style="transition-delay:.22s">
+      <button class="btn-primary" onclick="document.getElementById('vsl').scrollIntoView({behavior:'smooth'})">
+        Ver cómo funciona ↓
+      </button>
+      <button class="btn-ghost" onclick="document.getElementById('agenda').scrollIntoView({behavior:'smooth'})">
+        Hablar con el equipo
+      </button>
+    </div>
+
+    <div class="hero-stats fi-anim" style="transition-delay:.30s">
+      <div class="hstat">
+        <div class="hstat-num">3×</div>
+        <div class="hstat-label">Volumen de<br>leads calificados</div>
+      </div>
+      <div class="hstat">
+        <div class="hstat-num">↓60%</div>
+        <div class="hstat-label">Costo por<br>cierre</div>
+      </div>
+      <div class="hstat">
+        <div class="hstat-num">90d</div>
+        <div class="hstat-label">Para ver<br>resultados reales</div>
+      </div>
+      <div class="hstat">
+        <div class="hstat-num">+ROI</div>
+        <div class="hstat-label">Medible desde<br>el primer mes</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROBLEMA -->
+<section id="problema">
+  <div class="wrap">
+    <div class="sec-eyebrow">El problema real</div>
+    <h2 class="sec-h2 fi-anim">No es que falten leads.<br>Es que la máquina está rota.</h2>
+    <p class="prob-intro fi-anim">
+      La mayoría invierte más en publicidad esperando más resultados.
+      El problema no es el presupuesto. Es el sistema.
+    </p>
+    <div class="prob-grid fi-anim">
+      <div class="prob-card">
+        <div class="prob-num">01</div>
+        <h3>Leads sin calidad</h3>
+        <p>Llegan personas sin dinero, confundidas o que no son tu cliente. Tu equipo pierde tiempo, moral y foco.</p>
+      </div>
+      <div class="prob-card">
+        <div class="prob-num">02</div>
+        <h3>Creatividades agotadas</h3>
+        <p>El mismo ángulo, el mismo formato. El mercado lo ignoró. La competencia hace lo mismo y el costo sube solo.</p>
+      </div>
+      <div class="prob-card">
+        <div class="prob-num">03</div>
+        <h3>Vendedores en vacío</h3>
+        <p>Tenés estructura, equipo y capacidad instalada. Pero sin el flujo correcto de leads calificados, esa inversión opera en vacío.</p>
+      </div>
+      <div class="prob-card">
+        <div class="prob-num">04</div>
+        <h3>Sin visión externa</h3>
+        <p>Cuando estás adentro no podés ver lo que el mercado ve. Hace falta una mirada que rompa la inercia.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- VSL -->
+<section id="vsl">
+  <div class="wrap">
+    <div class="sec-eyebrow">El método</div>
+    <h2 class="sec-h2 fi-anim">Mirá el sistema completo<br>antes de hablar con nosotros.</h2>
+    <div class="fi-anim" style="transition-delay:.1s">
+      <div class="vsl-frame">
+        <div class="vsl-scanlines"></div>
+        <div class="vsl-corner tl"></div>
+        <div class="vsl-corner tr"></div>
+        <div class="vsl-corner bl"></div>
+        <div class="vsl-corner br"></div>
+        <div class="vsl-tag">BLENT DIGITAL — SISTEMA DE ADQUISICIÓN</div>
+        <div class="vsl-play">
+          <svg width="20" height="20" viewBox="0 0 24 24"><path d="M8 5.14v14l11-7-11-7z"/></svg>
+        </div>
+      </div>
+      <div class="vsl-meta">
+        <div class="vsl-duration">8 minutos · Sin relleno · Todo el sistema</div>
+        <div class="vsl-sep"></div>
+        <div class="vsl-note">Miralo antes de agendar.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SISTEMA -->
+<section id="sistema">
+  <div class="wrap">
+    <div class="sec-eyebrow">Cómo trabajamos</div>
+    <h2 class="sec-h2 fi-anim">Cuatro fases.<br>Un sistema predecible.</h2>
+    <div class="steps fi-anim" style="transition-delay:.1s">
+      <div class="step-row hl">
+        <div class="step-n">01</div>
+        <div class="step-body">
+          <h3>Diagnóstico de funnel</h3>
+          <p>Analizamos tu proceso actual: creatividades vigentes, CPL real, calidad de leads y dónde exactamente se rompe la cadena.</p>
+          <span class="step-tag">Semana 1</span>
+        </div>
+      </div>
+      <div class="step-row">
+        <div class="step-n">02</div>
+        <div class="step-body">
+          <h3>Nuevo ángulo creativo</h3>
+          <p>Construimos el mensaje, los anuncios y el VSL desde cero. Basados en el estado emocional real de tu mercado, no en lo que ya se hizo mil veces.</p>
+          <span class="step-tag">Semanas 2–3</span>
+        </div>
+      </div>
+      <div class="step-row">
+        <div class="step-n">03</div>
+        <div class="step-body">
+          <h3>Funnel completo</h3>
+          <p>Landing, formulario de pre-calificación, secuencia de seguimiento y sistema de agendamiento. Todo conectado y listo para pautar.</p>
+          <span class="step-tag">Semanas 3–4</span>
+        </div>
+      </div>
+      <div class="step-row">
+        <div class="step-n">04</div>
+        <div class="step-body">
+          <h3>Escala con criterio</h3>
+          <p>Testeamos, medimos y optimizamos. Solo escalamos cuando el sistema demuestra que funciona. Sin apuro, con datos.</p>
+          <span class="step-tag">Mes 2 en adelante</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PARA QUIÉN -->
+<section id="paraquien">
+  <div class="wrap">
+    <div class="sec-eyebrow">¿Es para vos?</div>
+    <h2 class="sec-h2 fi-anim">Trabajamos con negocios<br>que ya tienen base.</h2>
+    <div class="fit-list fi-anim" style="transition-delay:.1s">
+      <div class="fit-row">
+        <span class="fit-icon yes">✓</span>
+        <p class="fit-text"><strong>Tenés equipo de ventas activo</strong> pero les falta volumen o calidad de leads para operar a plena capacidad.</p>
+      </div>
+      <div class="fit-row">
+        <span class="fit-icon yes">✓</span>
+        <p class="fit-text"><strong>Invertís en publicidad</strong> pero el costo por cliente subió y la calidad de los leads bajó en los últimos meses.</p>
+      </div>
+      <div class="fit-row">
+        <span class="fit-icon yes">✓</span>
+        <p class="fit-text"><strong>Tu mensaje se repite</strong> y sentís que el mercado ya no responde como antes a lo que comunica tu marca.</p>
+      </div>
+      <div class="fit-row">
+        <span class="fit-icon yes">✓</span>
+        <p class="fit-text"><strong>Querés recuperar el control</strong> del proceso comercial y volver a tener un sistema de adquisición predecible.</p>
+      </div>
+      <div class="fit-row">
+        <span class="fit-icon yes">✓</span>
+        <p class="fit-text"><strong>Estás dispuesto a construir el sistema</strong> y no solo prender ads esperando resultados mágicos.</p>
+      </div>
+      <div class="fit-row no-fit">
+        <span class="fit-icon no">✗</span>
+        <p class="fit-text">No trabajamos con negocios que recién arrancan o que no tienen estructura comercial instalada.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIOS -->
+<section id="testimonios">
+  <div class="wrap">
+    <div class="sec-eyebrow">Lo que dicen los clientes</div>
+    <h2 class="sec-h2 fi-anim">Resultados reales.<br>Personas reales.</h2>
+
+    <div class="test-summary fi-anim" style="transition-delay:.08s">
+      <div class="test-summary-score">
+        <span class="test-big">★★★★★</span>
+        <span class="test-pct">Recomendado por el 100%</span>
+      </div>
+      <div class="test-summary-sep"></div>
+      <p class="test-summary-text">7 reseñas verificadas en Facebook · Blent Digital</p>
+    </div>
+
+    <div class="test-grid fi-anim" style="transition-delay:.14s">
+
+      <div class="test-card test-featured">
+        <div class="test-stars">★★★★★</div>
+        <p class="test-quote">"Con la ayuda de Adrián en marketing digital obtuvimos resultados desde el primer día. Es destacable su compromiso y atención en todo momento."</p>
+        <div class="test-author">
+          <div class="test-avatar">AR</div>
+          <div class="test-info">
+            <p class="test-name">Ayrton Roman Ross</p>
+            <p class="test-role">Cliente verificado · Facebook</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="test-card">
+        <div class="test-stars">★★★★★</div>
+        <p class="test-quote">"De todo lo que me aportó y aprendí, sentí que no pagué nada. La verdad muy profesional y aplicado, lo recomiendo muchísimo."</p>
+        <div class="test-author">
+          <div class="test-avatar">FG</div>
+          <div class="test-info">
+            <p class="test-name">Fede Garbarino</p>
+            <p class="test-role">Cliente verificado · Facebook</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="test-card">
+        <div class="test-stars">★★★★★</div>
+        <p class="test-quote">"Destaco su profesionalismo, paciencia y cálida atención, como sus aportes y sugerencias creativas e inteligentes. Totalmente recomendable."</p>
+        <div class="test-author">
+          <div class="test-avatar">PB</div>
+          <div class="test-info">
+            <p class="test-name">Patricia Nora Berdichevsky</p>
+            <p class="test-role">Cliente verificada · Facebook</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="test-card">
+        <div class="test-stars">★★★★★</div>
+        <p class="test-quote">"Muy buena la asesoría, sobre todo muy claro el mensaje y buena predisposición de su parte. Muy recomendable."</p>
+        <div class="test-author">
+          <div class="test-avatar">MG</div>
+          <div class="test-info">
+            <p class="test-name">Marcos Godoy</p>
+            <p class="test-role">Cliente verificado · Facebook</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="test-card">
+        <div class="test-stars">★★★★★</div>
+        <p class="test-quote">"Me ayudaron en mis primeros pasos de Marketing digital para mi página de ventas. Te educan y asesoran muy bien."</p>
+        <div class="test-author">
+          <div class="test-avatar">MU</div>
+          <div class="test-info">
+            <p class="test-name">Makier UshGame</p>
+            <p class="test-role">Cliente verificado · Facebook</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="test-card">
+        <div class="test-stars">★★★★★</div>
+        <p class="test-quote">"Muy comprometido y profesional. No se van a arrepentir de solicitar sus servicios."</p>
+        <div class="test-author">
+          <div class="test-avatar">NS</div>
+          <div class="test-info">
+            <p class="test-name">Nicolás Sarrachini</p>
+            <p class="test-role">Cliente verificado · Facebook</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="test-cta fi-anim" style="transition-delay:.2s">
+      <button class="btn-primary" onclick="document.getElementById('agenda').scrollIntoView({behavior:'smooth'})">
+        Quiero resultados así →
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- AGENDA -->
+<section id="agenda">
+  <div class="wrap">
+    <div class="sec-eyebrow">Primer paso</div>
+    <h2 class="sec-h2 fi-anim">Una llamada de diagnóstico.<br>Sin compromiso.</h2>
+    <div class="agenda-grid">
+      <div class="agenda-copy fi-anim">
+        <p>En 30 minutos analizamos tu situación actual, identificamos dónde está el cuello de botella y te decimos con honestidad si podemos ayudarte.</p>
+        <p>No es una llamada de ventas. Es un diagnóstico. Si no hay fit real, te lo decimos en esa misma llamada.</p>
+        <p>Usamos inteligencia artificial para construir y optimizar cada pieza del sistema. No prometemos volumen. Prometemos criterio y proceso.</p>
+        <div class="agenda-pill">
+          <div class="agenda-pill-dot"></div>
+          <p>Diagnóstico gratuito · Resultados medibles en 90 días.</p>
+        </div>
+      </div>
+      <div class="form-box fi-anim" style="transition-delay:.12s">
+
+        <!-- STEP INDICATOR -->
+        <div class="sq-steps">
+          <div class="sq-step active" id="sq-s1">1</div>
+          <div class="sq-step-line"></div>
+          <div class="sq-step" id="sq-s2">2</div>
+          <div class="sq-step-line"></div>
+          <div class="sq-step" id="sq-s3">3</div>
+          <div class="sq-step-line"></div>
+          <div class="sq-step" id="sq-s4">4</div>
+          <div class="sq-step-line"></div>
+          <div class="sq-step" id="sq-s5">5</div>
+        </div>
+
+        <!-- STEP 1: NOMBRE + WPP -->
+        <div class="sq-panel active" id="panel-1">
+          <p class="sq-q">Antes de empezar,<br><strong>¿cómo te llamás?</strong></p>
+          <label class="fl">Nombre completo</label>
+          <input class="fi" type="text" id="sq-nombre" placeholder="Tu nombre">
+          <label class="fl" style="margin-top:18px">WhatsApp</label>
+          <input class="fi" type="text" id="sq-wpp" placeholder="+54 11 xxxx-xxxx">
+          <button class="sq-next" onclick="sqNext(1)">Continuar →</button>
+        </div>
+
+        <!-- STEP 2: FACTURACIÓN -->
+        <div class="sq-panel" id="panel-2">
+          <p class="sq-q">¿Cuál fue tu facturación<br><strong>promedio en los últimos 3 meses?</strong></p>
+          <div class="sq-opts" id="opts-fact">
+            <div class="sq-opt" onclick="sqSelect(this,'fact','menos-2k')">Menos de $2.000/mes</div>
+            <div class="sq-opt" onclick="sqSelect(this,'fact','2k-5k')">Entre $2.000 y $5.000/mes</div>
+            <div class="sq-opt" onclick="sqSelect(this,'fact','5k-10k')">Entre $5.000 y $10.000/mes</div>
+            <div class="sq-opt" onclick="sqSelect(this,'fact','mas-10k')">Más de $10.000/mes</div>
+          </div>
+          <button class="sq-next" onclick="sqNext(2)">Continuar →</button>
+        </div>
+
+        <!-- STEP 3: SISTEMA DE ADQUISICIÓN -->
+        <div class="sq-panel" id="panel-3">
+          <p class="sq-q">¿Tenés actualmente<br><strong>un sistema de adquisición de clientes?</strong></p>
+          <div class="sq-opts" id="opts-sistema">
+            <div class="sq-opt" onclick="sqSelect(this,'sistema','no')">No, los clientes llegan solos o por referidos</div>
+            <div class="sq-opt" onclick="sqSelect(this,'sistema','basico')">Tengo algo básico pero no funciona bien</div>
+            <div class="sq-opt" onclick="sqSelect(this,'sistema','si')">Sí, pero quiero mejorarlo y escalarlo</div>
+          </div>
+          <button class="sq-next" onclick="sqNext(3)">Continuar →</button>
+        </div>
+
+        <!-- STEP 4: ADS -->
+        <div class="sq-panel" id="panel-4">
+          <p class="sq-q">¿Ya invertiste o invertís<br><strong>en publicidad paga?</strong></p>
+          <div class="sq-opts" id="opts-ads">
+            <div class="sq-opt" onclick="sqSelect(this,'ads','nunca')">Nunca, es algo nuevo para mí</div>
+            <div class="sq-opt" onclick="sqSelect(this,'ads','probe')">Sí probé, pero no me dio resultados</div>
+            <div class="sq-opt" onclick="sqSelect(this,'ads','activo')">Sí, invierto actualmente</div>
+          </div>
+          <button class="sq-next" onclick="sqNext(4)">Continuar →</button>
+        </div>
+
+        <!-- STEP 5: PRESUPUESTO -->
+        <div class="sq-panel" id="panel-5">
+          <p class="sq-q">Si el sistema funciona,<br><strong>¿qué presupuesto mensual destinarías a ads?</strong></p>
+          <div class="sq-opts" id="opts-budget">
+            <div class="sq-opt" onclick="sqSelect(this,'budget','menos-500')">Menos de $500/mes</div>
+            <div class="sq-opt" onclick="sqSelect(this,'budget','500-1500')">Entre $500 y $1.500/mes</div>
+            <div class="sq-opt" onclick="sqSelect(this,'budget','1500-3k')">Entre $1.500 y $3.000/mes</div>
+            <div class="sq-opt" onclick="sqSelect(this,'budget','mas-3k')">Más de $3.000/mes</div>
+          </div>
+          <button class="sq-next" onclick="sqNext(5)">Ver mi resultado →</button>
+        </div>
+
+        <!-- RESULT PANEL -->
+        <div class="sq-panel" id="panel-result">
+          <div class="sq-result-icon" id="sq-icon">⚡</div>
+          <p class="sq-result-title" id="sq-result-title">Analizando tus respuestas...</p>
+          <p class="sq-result-sub" id="sq-result-sub"></p>
+          <button class="sq-next" id="sq-result-btn" onclick="sqRedirect()">Continuar →</button>
+        </div>
+
+        <p class="form-note">Sin spam · Sin presión · 100% confidencial</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-logo">BLENT<span>.</span></div>
+    <p class="footer-copy">© 2025 Blent Digital · Sistema de Adquisición de Clientes</p>
+  </div>
+</footer>
+
+<script>
+// Progress bar
+const bar = document.getElementById('progress-bar');
+window.addEventListener('scroll', () => {
+  const h = document.body.scrollHeight - window.innerHeight;
+  bar.style.width = (h > 0 ? (window.scrollY / h) * 100 : 0) + '%';
+}, { passive: true });
+
+// Fade in on scroll
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); }
+  });
+}, { threshold: 0.08 });
+document.querySelectorAll('.fi-anim').forEach(el => obs.observe(el));
+
+// ── SMART QUALIFIER ──
+const sqAnswers = {};
+let sqDestination = '';
+
+function sqSelect(el, key, val) {
+  // Deselect siblings
+  el.closest('.sq-opts').querySelectorAll('.sq-opt').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+  sqAnswers[key] = val;
+}
+
+function sqNext(step) {
+  // Validate
+  if (step === 1) {
+    const nombre = document.getElementById('sq-nombre').value.trim();
+    const wpp = document.getElementById('sq-wpp').value.trim();
+    if (!nombre || !wpp) {
+      document.getElementById('sq-nombre').style.borderBottomColor = nombre ? '' : 'var(--orange)';
+      document.getElementById('sq-wpp').style.borderBottomColor = wpp ? '' : 'var(--orange)';
+      return;
+    }
+    sqAnswers.nombre = nombre;
+    sqAnswers.wpp = wpp;
+  } else {
+    const keys = ['','','fact','sistema','ads','budget'];
+    if (step >= 2 && !sqAnswers[keys[step]]) {
+      const opts = document.querySelectorAll('#opts-' + ['','','fact','sistema','ads','budget'][step] + ' .sq-opt');
+      opts.forEach(o => { o.style.borderColor = 'rgba(255,115,0,0.5)'; setTimeout(() => o.style.borderColor = '', 800); });
+      return;
+    }
+  }
+
+  // Mark step done
+  document.getElementById('sq-s' + step).classList.remove('active');
+  document.getElementById('sq-s' + step).classList.add('done');
+
+  if (step < 5) {
+    document.getElementById('panel-' + step).classList.remove('active');
+    document.getElementById('panel-' + (step + 1)).classList.add('active');
+    document.getElementById('sq-s' + (step + 1)).classList.add('active');
+  } else {
+    // Evaluate
+    document.getElementById('panel-5').classList.remove('active');
+    document.getElementById('panel-result').classList.add('active');
+    document.getElementById('sq-s5').classList.remove('active');
+    document.getElementById('sq-s5').classList.add('done');
+    sqEvaluate();
+  }
+}
+
+function sqEvaluate() {
+  const fact = sqAnswers.fact;
+  // DOWNSELL: menos de $5K/mes
+  const downsell = (fact === 'menos-2k' || fact === '2k-5k');
+
+  const titleEl = document.getElementById('sq-result-title');
+  const subEl = document.getElementById('sq-result-sub');
+  const btnEl = document.getElementById('sq-result-btn');
+  const iconEl = document.getElementById('sq-icon');
+
+  // Small delay for effect
+  setTimeout(() => {
+    if (downsell) {
+      iconEl.textContent = '📘';
+      titleEl.textContent = 'Tenemos algo para vos.';
+      subEl.textContent = 'Antes de trabajar juntos, te recomendamos nuestro programa de implementación autónoma. Aprendés el sistema completo y lo ejecutás a tu ritmo, sin acompañamiento. Ideal para donde estás hoy.';
+      btnEl.textContent = 'Ver el programa →';
+      sqDestination = 'URL_DOWNSELL';
+    } else {
+      iconEl.textContent = '🟠';
+      titleEl.textContent = '¡Calificás para el diagnóstico!';
+      subEl.textContent = 'Tu perfil encaja con el tipo de negocios con los que trabajamos. El siguiente paso es una llamada de diagnóstico gratuita de 30 minutos donde analizamos tu situación y te decimos si podemos ayudarte.';
+      btnEl.textContent = 'Agendar mi diagnóstico →';
+      sqDestination = 'URL_AGENDA';
+    }
+  }, 600);
+}
+
+function sqRedirect() {
+  // Prepare payload for GHL webhook
+  const payload = {
+    nombre: sqAnswers.nombre,
+    whatsapp: sqAnswers.wpp,
+    facturacion: sqAnswers.fact,
+    sistema_adquisicion: sqAnswers.sistema,
+    inversion_ads: sqAnswers.ads,
+    presupuesto_ads: sqAnswers.budget,
+    tipo_lead: sqDestination === 'URL_DOWNSELL' ? 'downsell' : 'calificado'
+  };
+
+  // Send to GHL webhook
+  fetch('https://services.leadconnectorhq.com/hooks/dj7NSzRTr5fE7e2wAwrq/webhook-trigger/fa310e4e-e009-4551-9412-b6cdcc1c28be', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(payload)
+  })
+  .then(response => {
+    // Regardless of response, redirect after a short delay
+    setTimeout(() => {
+      if (sqDestination) window.location.href = sqDestination;
+    }, 800);
+  })
+  .catch(error => {
+    console.log('Webhook sent, redirecting...');
+    // Even if there's an error, redirect
+    setTimeout(() => {
+      if (sqDestination) window.location.href = sqDestination;
+    }, 800);
+  });
+}
+
+</script>
+</body>
+</html>
