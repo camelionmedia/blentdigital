@@ -122,6 +122,13 @@ p {
 
   <p>Acabás de dar el primer paso para transformar tu sistema de adquisición. En los próximos minutos recibirás por email los detalles de tu reunión de diagnóstico.</p>
 
+  <div id="meeting-info" style="background: rgba(255,115,0,0.08); border: 1px solid rgba(255,115,0,0.2); border-radius: 10px; padding: 20px; margin: 28px 0; text-align: left; display: none;">
+    <p style="font-size: 12px; color: rgba(255,255,255,0.5); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 1px;">Tu reunión</p>
+    <p style="font-size: 16px; color: #fff; margin: 0; font-weight: 500;">
+      <span id="meeting-date-display" style="color: var(--orange);">—</span> a las <span id="meeting-time-display" style="color: var(--orange);">—</span>
+    </p>
+  </div>
+
   <div style="background: rgba(255,115,0,0.08); border: 1px solid rgba(255,115,0,0.2); border-radius: 10px; padding: 20px; margin: 28px 0; text-align: left;">
     <p style="font-size: 12px; color: rgba(255,255,255,0.5); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px;">Tu próximo paso</p>
     <p style="font-size: 14px; color: #fff; margin: 0; line-height: 1.6;">En 30 minutos analizaremos tu situación actual, identificaremos dónde está el cuello de botella en tu proceso comercial, y te diremos con honestidad si podemos ayudarte a lograr 3x más leads calificados sin perder dinero en ads que no funcionan.</p>
@@ -145,5 +152,45 @@ p {
   </div>
 </div>
 
+<script>
+// Leer parámetros de URL para fecha y hora
+function getMeetingInfo() {
+  const params = new URLSearchParams(window.location.search);
+  return {
+    date: params.get('date'),
+    time: params.get('time')
+  };
+}
+
+function formatDate(dateStr) {
+  if (!dateStr) return null;
+  try {
+    const date = new Date(dateStr + 'T00:00:00');
+    const opciones = { day: 'numeric', month: 'long', year: 'numeric' };
+    return date.toLocaleDateString('es-ES', opciones);
+  } catch (e) {
+    return null;
+  }
+}
+
+function formatTime(timeStr) {
+  if (!timeStr) return null;
+  // Espera formato HH:mm
+  return timeStr;
+}
+
+// Mostrar información de reunión si existe
+const meeting = getMeetingInfo();
+if (meeting.date && meeting.time) {
+  const formattedDate = formatDate(meeting.date);
+  const formattedTime = formatTime(meeting.time);
+
+  if (formattedDate && formattedTime) {
+    document.getElementById('meeting-info').style.display = 'block';
+    document.getElementById('meeting-date-display').textContent = formattedDate;
+    document.getElementById('meeting-time-display').textContent = formattedTime;
+  }
+}
+</script>
 </body>
 </html>
