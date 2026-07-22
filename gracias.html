@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>¡Gracias! — Blent Digital</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --orange: #FF7300;
+  --orange-dark: #e06200;
+  --black: #080808;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--black);
+  color: #fff;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.container {
+  max-width: 560px;
+  text-align: center;
+}
+
+.icon {
+  font-size: 72px;
+  margin-bottom: 32px;
+  animation: bounce 0.6s ease-out;
+}
+
+@keyframes bounce {
+  0% { transform: scale(0.5); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+h1 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(36px, 6vw, 52px);
+  letter-spacing: 1px;
+  margin-bottom: 16px;
+  line-height: 1.1;
+}
+
+h1 span { color: var(--orange); }
+
+p {
+  font-size: 16px;
+  font-weight: 300;
+  color: rgba(255,255,255,0.65);
+  line-height: 1.8;
+  margin-bottom: 24px;
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.btn {
+  padding: 14px 28px;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: 'DM Sans', sans-serif;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.btn-primary {
+  background: var(--orange);
+  color: #000;
+}
+
+.btn-primary:hover {
+  background: var(--orange-dark);
+  transform: translateY(-1px);
+}
+
+.btn-ghost {
+  background: transparent;
+  color: rgba(255,255,255,0.4);
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
+.btn-ghost:hover {
+  color: rgba(255,255,255,0.7);
+  border-color: rgba(255,115,0,0.3);
+}
+
+.footer {
+  margin-top: 48px;
+  padding-top: 32px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  font-size: 12px;
+  color: rgba(255,255,255,0.3);
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="icon">✓</div>
+
+  <h1>¡Tu diagnóstico<br>está <span>confirmado</span>!</h1>
+
+  <p>Recibimos tu información. En las próximas horas te contactaremos vía WhatsApp para confirmar tu llamada de diagnóstico gratuita.</p>
+
+  <p style="font-size: 14px; color: rgba(255,255,255,0.4); margin-bottom: 32px;">Mientras tanto, podés seguir conociendo nuestro método.</p>
+
+  <div class="actions">
+    <a href="/" class="btn btn-primary">Volver a la landing</a>
+    <a href="https://www.instagram.com/blentdigital" target="_blank" class="btn btn-ghost">Seguir en Instagram</a>
+  </div>
+
+  <div class="footer">
+    <p>© 2025 Blent Digital · Sistema de Adquisición de Clientes</p>
+  </div>
+</div>
+
+</body>
+</html>

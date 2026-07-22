@@ -1105,6 +1105,15 @@ footer {
   </div>
 </section>
 
+<!-- PRUEBA SOCIAL -->
+<section id="social-proof" style="padding: 56px clamp(24px, 4vw, 48px); background: #0a0a0a; border-bottom: 1px solid rgba(255,255,255,0.06);">
+  <div class="wrap" style="text-align: center;">
+    <p style="font-size: 13px; color: rgba(255,255,255,0.5); margin-bottom: 12px;">
+      <span style="color: var(--orange); font-weight: 500;" id="proof-name">María</span> acaba de agendar su llamada de diagnóstico
+    </p>
+  </div>
+</section>
+
 <!-- AGENDA -->
 <section id="agenda">
   <div class="wrap">
@@ -1214,6 +1223,19 @@ footer {
 </footer>
 
 <script>
+// Nombres para prueba social
+const nombres = ['María', 'Juan', 'Carlos', 'Alejandra', 'Roberto', 'Sofía', 'Miguel', 'Lucía', 'Francisco', 'Valeria', 'Andrés', 'Carolina', 'José', 'Martina', 'Diego'];
+
+function actualizarNombrePrueba() {
+  const nombre = nombres[Math.floor(Math.random() * nombres.length)];
+  const el = document.getElementById('proof-name');
+  if (el) el.textContent = nombre;
+}
+
+// Cambiar nombre cada 4 segundos
+setInterval(actualizarNombrePrueba, 4000);
+actualizarNombrePrueba();
+
 // Progress bar
 const bar = document.getElementById('progress-bar');
 window.addEventListener('scroll', () => {
@@ -1296,13 +1318,13 @@ function sqEvaluate() {
       titleEl.textContent = 'Tenemos algo para vos.';
       subEl.textContent = 'Antes de trabajar juntos, te recomendamos nuestro programa de implementación autónoma. Aprendés el sistema completo y lo ejecutás a tu ritmo, sin acompañamiento. Ideal para donde estás hoy.';
       btnEl.textContent = 'Ver el programa →';
-      sqDestination = 'URL_DOWNSELL';
+      sqDestination = '/downsell.html';
     } else {
       iconEl.textContent = '🟠';
       titleEl.textContent = '¡Calificás para el diagnóstico!';
       subEl.textContent = 'Tu perfil encaja con el tipo de negocios con los que trabajamos. El siguiente paso es una llamada de diagnóstico gratuita de 30 minutos donde analizamos tu situación y te decimos si podemos ayudarte.';
       btnEl.textContent = 'Agendar mi diagnóstico →';
-      sqDestination = 'URL_AGENDA';
+      sqDestination = '/gracias.html';
     }
   }, 600);
 }
