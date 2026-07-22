@@ -799,6 +799,59 @@ footer {
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: rgba(255,115,0,0.18); border-radius: 99px; }
 
+/* ── SOCIAL PROOF TOAST ── */
+.proof-toast {
+  position: fixed;
+  bottom: 24px;
+  left: 24px;
+  background: var(--black2);
+  border: 1px solid var(--orange-border);
+  padding: 16px 20px;
+  border-radius: var(--radius-lg);
+  max-width: 280px;
+  z-index: 50;
+  animation: slideInLeft 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.proof-toast.hide {
+  animation: slideOutLeft 0.4s cubic-bezier(0.36, 0, 0.66, -0.56);
+  pointer-events: none;
+}
+
+@keyframes slideInLeft {
+  from {
+    transform: translateX(-120%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideOutLeft {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(-120%);
+    opacity: 0;
+  }
+}
+
+.proof-content p {
+  font-size: 13px;
+  color: rgba(255,255,255,0.7);
+  line-height: 1.5;
+  margin: 0;
+}
+
+.proof-content p span {
+  color: var(--orange);
+  font-weight: 500;
+}
+
 /* ── RESPONSIVE ── */
 @media (max-width: 720px) {
   :root { --nav-h: 60px; }
@@ -1107,15 +1160,6 @@ footer {
   </div>
 </section>
 
-<!-- PRUEBA SOCIAL -->
-<section id="social-proof" style="padding: 56px clamp(24px, 4vw, 48px); background: #0a0a0a; border-bottom: 1px solid rgba(255,255,255,0.06);">
-  <div class="wrap" style="text-align: center;">
-    <p style="font-size: 13px; color: rgba(255,255,255,0.5); margin-bottom: 12px;">
-      <span style="color: var(--orange); font-weight: 500;" id="proof-name">María</span> acaba de agendar su llamada de diagnóstico
-    </p>
-  </div>
-</section>
-
 <!-- AGENDA -->
 <section id="agenda">
   <div class="wrap">
@@ -1224,19 +1268,41 @@ footer {
   </div>
 </footer>
 
+<!-- SOCIAL PROOF TOAST -->
+<div id="proof-toast" class="proof-toast" style="display: none;">
+  <div class="proof-content">
+    <p><span id="proof-name-toast">María</span> acaba de agendar su llamada de diagnóstico</p>
+  </div>
+</div>
+
 <script>
 // Nombres para prueba social
 const nombres = ['María', 'Juan', 'Carlos', 'Alejandra', 'Roberto', 'Sofía', 'Miguel', 'Lucía', 'Francisco', 'Valeria', 'Andrés', 'Carolina', 'José', 'Martina', 'Diego'];
 
-function actualizarNombrePrueba() {
+function mostrarProofToast() {
   const nombre = nombres[Math.floor(Math.random() * nombres.length)];
-  const el = document.getElementById('proof-name');
-  if (el) el.textContent = nombre;
+  const toast = document.getElementById('proof-toast');
+  const nameEl = document.getElementById('proof-name-toast');
+
+  if (toast && nameEl) {
+    nameEl.textContent = nombre;
+    toast.style.display = 'block';
+    toast.classList.remove('hide');
+
+    // Ocultar después de 5 segundos
+    setTimeout(() => {
+      toast.classList.add('hide');
+      setTimeout(() => {
+        toast.style.display = 'none';
+      }, 400);
+    }, 5000);
+  }
 }
 
-// Cambiar nombre cada 4 segundos
-setInterval(actualizarNombrePrueba, 4000);
-actualizarNombrePrueba();
+// Mostrar toast cada 8 segundos (5s visible + 3s de espera)
+setInterval(mostrarProofToast, 8000);
+// Mostrar primero después de 2 segundos de cargar la página
+setTimeout(mostrarProofToast, 2000);
 
 // Progress bar
 const bar = document.getElementById('progress-bar');
