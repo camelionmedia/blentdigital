@@ -123,13 +123,14 @@ p {
   <p>Acabás de dar el primer paso para transformar tu sistema de adquisición. En los próximos minutos recibirás por email los detalles de tu reunión de diagnóstico.</p>
 
   <div id="meeting-info" style="background: var(--orange); border-radius: 10px; padding: 32px 24px; margin: 40px 0; text-align: center; display: none;">
-    <p style="font-size: 12px; color: rgba(0,0,0,0.6); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 2px; font-weight: 600;">Tu reunión está confirmada para</p>
-    <p style="font-size: 28px; color: #000; margin: 0 0 4px 0; font-weight: 700; font-family: 'Bebas Neue', sans-serif; letter-spacing: 1px;">
+    <p style="font-size: 14px; color: rgba(0,0,0,0.7); margin-bottom: 16px; text-transform: uppercase; letter-spacing: 2px; font-weight: 600;">Agendate ahora mismo</p>
+    <p style="font-size: 26px; color: #000; margin: 0 0 6px 0; font-weight: 700; font-family: 'Bebas Neue', sans-serif; letter-spacing: 1px;">
       <span id="meeting-date-display">—</span>
     </p>
-    <p style="font-size: 20px; color: rgba(0,0,0,0.7); margin: 0; font-weight: 500;">
+    <p style="font-size: 18px; color: rgba(0,0,0,0.7); margin: 0 0 20px 0; font-weight: 500;">
       a las <span id="meeting-time-display">—</span>
     </p>
+    <p style="font-size: 12px; color: rgba(0,0,0,0.6); margin: 0;">Este es tu último paso: confirma por WhatsApp para asegurar tu lugar.</p>
   </div>
 
   <div style="background: rgba(255,255,255,0.04); border-radius: 8px; padding: 16px; margin: 24px 0;">
@@ -139,7 +140,8 @@ p {
   </div>
 
   <div class="actions" style="flex-direction: column; gap: 12px;">
-    <a href="https://wa.link/7zo381" target="_blank" class="btn btn-primary" style="width: 100%;">Confirmar reunión</a>
+    <a href="https://wa.link/7zo381" target="_blank" class="btn btn-primary" style="width: 100%; font-size: 11px;">Confirmar por WhatsApp</a>
+    <button id="add-calendar-btn" class="btn btn-ghost" style="width: 100%; cursor: pointer; background: rgba(255,115,0,0.1); color: var(--orange); border: 1px solid var(--orange);">Agregar a calendario</button>
     <a href="/" class="btn btn-ghost" style="width: 100%;">Volver a la landing</a>
   </div>
 
@@ -185,8 +187,31 @@ if (meeting.date && meeting.time) {
     document.getElementById('meeting-info').style.display = 'block';
     document.getElementById('meeting-date-display').textContent = formattedDate;
     document.getElementById('meeting-time-display').textContent = formattedTime;
+
+    // Configurar botón agregar a calendario
+    document.getElementById('add-calendar-btn').addEventListener('click', function() {
+      addToCalendar(meeting.date, meeting.time);
+    });
   }
 }
+
+function addToCalendar(dateStr, timeStr) {
+  // Crear URL de Google Calendar
+  const [year, month, day] = dateStr.split('-');
+  const [hour, minute] = timeStr.split(':');
+
+  // Google Calendar necesita formato: YYYYMMDDTHHMMSS
+  const startTime = `${year}${month}${day}T${hour}${minute}00`;
+  const endTime = `${year}${month}${day}T${String(parseInt(hour) + 1).padStart(2, '0')}${minute}00`;
+
+  const title = 'Llamada de diagnóstico - Blent Digital';
+  const description = 'Tu diagnóstico gratuito con el equipo de Blent Digital';
+
+  const calendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(title)}&dates=${startTime}/${endTime}&details=${encodeURIComponent(description)}&location=Online`;
+
+  window.open(calendarUrl, '_blank');
+}
+
 </script>
 </body>
 </html>
