@@ -1190,13 +1190,15 @@ footer {
           <div class="sq-step" id="sq-s5">5</div>
         </div>
 
-        <!-- STEP 1: NOMBRE + WPP -->
+        <!-- STEP 1: NOMBRE + WPP + EMAIL -->
         <div class="sq-panel active" id="panel-1">
           <p class="sq-q">Antes de empezar,<br><strong>¿cómo te llamás?</strong></p>
           <label class="fl">Nombre completo</label>
           <input class="fi" type="text" id="sq-nombre" placeholder="Tu nombre">
           <label class="fl" style="margin-top:18px">WhatsApp</label>
           <input class="fi" type="text" id="sq-wpp" placeholder="+54 11 xxxx-xxxx">
+          <label class="fl" style="margin-top:18px">Email</label>
+          <input class="fi" type="email" id="sq-email" placeholder="tu@email.com">
           <button class="sq-next" onclick="sqNext(1)">Continuar →</button>
         </div>
 
@@ -1335,13 +1337,16 @@ function sqNext(step) {
   if (step === 1) {
     const nombre = document.getElementById('sq-nombre').value.trim();
     const wpp = document.getElementById('sq-wpp').value.trim();
-    if (!nombre || !wpp) {
+    const email = document.getElementById('sq-email').value.trim();
+    if (!nombre || !wpp || !email) {
       document.getElementById('sq-nombre').style.borderBottomColor = nombre ? '' : 'var(--orange)';
       document.getElementById('sq-wpp').style.borderBottomColor = wpp ? '' : 'var(--orange)';
+      document.getElementById('sq-email').style.borderBottomColor = email ? '' : 'var(--orange)';
       return;
     }
     sqAnswers.nombre = nombre;
     sqAnswers.wpp = wpp;
+    sqAnswers.email = email;
   } else {
     const keys = ['','','fact','sistema','ads','budget'];
     if (step >= 2 && !sqAnswers[keys[step]]) {
