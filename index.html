@@ -1371,8 +1371,8 @@ function sqNext(step) {
 
 function sqEvaluate() {
   const fact = sqAnswers.fact;
-  // DOWNSELL: menos de $5K/mes
-  const downsell = (fact === 'menos-2k' || fact === '2k-5k');
+  // NO CALIFICA: menos de $2K/mes
+  const noCalifica = (fact === 'menos-2k');
 
   const titleEl = document.getElementById('sq-result-title');
   const subEl = document.getElementById('sq-result-sub');
@@ -1381,18 +1381,18 @@ function sqEvaluate() {
 
   // Small delay for effect
   setTimeout(() => {
-    if (downsell) {
-      iconEl.textContent = '📘';
-      titleEl.textContent = 'Tenemos algo para vos.';
-      subEl.textContent = 'Antes de trabajar juntos, te recomendamos nuestro programa de implementación autónoma. Aprendés el sistema completo y lo ejecutás a tu ritmo, sin acompañamiento. Ideal para donde estás hoy.';
-      btnEl.textContent = 'Ver el programa →';
-      sqDestination = '/downsell.html';
+    if (noCalifica) {
+      iconEl.textContent = '❌';
+      titleEl.textContent = 'No es el momento todavía.';
+      subEl.textContent = 'Trabajamos con negocios que facturan desde $2.000/mes. En este momento tu empresa está en otra etapa. Te recomendamos volver cuando haya crecido más.';
+      btnEl.textContent = 'Volver a la landing';
+      sqDestination = '/';
     } else {
       iconEl.textContent = '🟠';
       titleEl.textContent = '¡Calificás para el diagnóstico!';
-      subEl.textContent = 'Tu perfil encaja con el tipo de negocios con los que trabajamos. El siguiente paso es una llamada de diagnóstico gratuita de 30 minutos donde analizamos tu situación y te decimos si podemos ayudarte.';
+      subEl.textContent = 'Tu perfil encaja con el tipo de negocios con los que trabajamos. El siguiente paso es agendar una llamada de diagnóstico gratuita de 30 minutos.';
       btnEl.textContent = 'Agendar mi diagnóstico →';
-      sqDestination = '/gracias.html';
+      sqDestination = 'calendar';
     }
   }, 600);
 }
@@ -1406,7 +1406,7 @@ function sqRedirect() {
     sistema_adquisicion: sqAnswers.sistema,
     inversion_ads: sqAnswers.ads,
     presupuesto_ads: sqAnswers.budget,
-    tipo_lead: sqDestination === 'URL_DOWNSELL' ? 'downsell' : 'calificado'
+    tipo_lead: sqDestination === 'calendar' ? 'calificado' : 'no_calificado'
   };
 
   // Send to GHL webhook
@@ -1420,14 +1420,25 @@ function sqRedirect() {
   .then(response => {
     // Regardless of response, redirect after a short delay
     setTimeout(() => {
-      if (sqDestination) window.location.href = sqDestination;
+      if (sqDestination === 'calendar') {
+        // Build calendar URL with phone and email params
+        const calendarUrl = 'https://api.leadconnectorhq.com/widget/booking/74XUjrv7prJ3uGUPiJHh?phone=' + encodeURIComponent(sqAnswers.wpp) + '&email=' + encodeURIComponent(sqAnswers.email || '');
+        window.location.href = calendarUrl;
+      } else {
+        window.location.href = sqDestination;
+      }
     }, 800);
   })
   .catch(error => {
     console.log('Webhook sent, redirecting...');
     // Even if there's an error, redirect
     setTimeout(() => {
-      if (sqDestination) window.location.href = sqDestination;
+      if (sqDestination === 'calendar') {
+        const calendarUrl = 'https://api.leadconnectorhq.com/widget/booking/74XUjrv7prJ3uGUPiJHh?phone=' + encodeURIComponent(sqAnswers.wpp) + '&email=' + encodeURIComponent(sqAnswers.email || '');
+        window.location.href = calendarUrl;
+      } else {
+        window.location.href = sqDestination;
+      }
     }, 800);
   });
 }
