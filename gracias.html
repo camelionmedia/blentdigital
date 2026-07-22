@@ -122,15 +122,21 @@ p {
 
   <p>Acabás de dar el primer paso para transformar tu sistema de adquisición. En los próximos minutos recibirás por email los detalles de tu reunión de diagnóstico.</p>
 
-  <div id="meeting-info" style="background: var(--orange); border-radius: 10px; padding: 32px 24px; margin: 40px 0; text-align: center; display: none;">
-    <p style="font-size: 14px; color: rgba(0,0,0,0.7); margin-bottom: 16px; text-transform: uppercase; letter-spacing: 2px; font-weight: 600;">Agendate ahora mismo</p>
-    <p style="font-size: 26px; color: #000; margin: 0 0 6px 0; font-weight: 700; font-family: 'Bebas Neue', sans-serif; letter-spacing: 1px;">
-      <span id="meeting-date-display">—</span>
-    </p>
-    <p style="font-size: 18px; color: rgba(0,0,0,0.7); margin: 0 0 20px 0; font-weight: 500;">
-      a las <span id="meeting-time-display">—</span>
-    </p>
-    <p style="font-size: 12px; color: rgba(0,0,0,0.6); margin: 0;">Este es tu último paso: confirma por WhatsApp para asegurar tu lugar.</p>
+  <div id="meeting-info" style="background: var(--orange); border-radius: 10px; padding: 32px 24px; margin: 40px 0; text-align: center;">
+    <div id="meeting-with-time" style="display: none;">
+      <p style="font-size: 14px; color: rgba(0,0,0,0.7); margin-bottom: 16px; text-transform: uppercase; letter-spacing: 2px; font-weight: 600;">Agendate ahora mismo</p>
+      <p style="font-size: 26px; color: #000; margin: 0 0 6px 0; font-weight: 700; font-family: 'Bebas Neue', sans-serif; letter-spacing: 1px;">
+        <span id="meeting-date-display">—</span>
+      </p>
+      <p style="font-size: 18px; color: rgba(0,0,0,0.7); margin: 0 0 20px 0; font-weight: 500;">
+        a las <span id="meeting-time-display">—</span>
+      </p>
+    </div>
+    <div id="meeting-without-time">
+      <p style="font-size: 14px; color: rgba(0,0,0,0.7); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 2px; font-weight: 600;">Tu reunión está</p>
+      <p style="font-size: 32px; color: #000; margin: 0; font-weight: 700; font-family: 'Bebas Neue', sans-serif; letter-spacing: 1px;">pendiente de confirmar</p>
+    </div>
+    <p style="font-size: 12px; color: rgba(0,0,0,0.6); margin-top: 20px; margin-bottom: 0;">Este es tu último paso: confirma por WhatsApp para asegurar tu lugar.</p>
   </div>
 
   <div style="background: rgba(255,255,255,0.04); border-radius: 8px; padding: 16px; margin: 24px 0;">
@@ -179,20 +185,30 @@ function formatTime(timeStr) {
 
 // Mostrar información de reunión si existe
 const meeting = getMeetingInfo();
+const meetingWithTime = document.getElementById('meeting-with-time');
+const meetingWithoutTime = document.getElementById('meeting-without-time');
+const addCalendarBtn = document.getElementById('add-calendar-btn');
+
 if (meeting.date && meeting.time) {
   const formattedDate = formatDate(meeting.date);
   const formattedTime = formatTime(meeting.time);
 
   if (formattedDate && formattedTime) {
-    document.getElementById('meeting-info').style.display = 'block';
+    meetingWithTime.style.display = 'block';
+    meetingWithoutTime.style.display = 'none';
     document.getElementById('meeting-date-display').textContent = formattedDate;
     document.getElementById('meeting-time-display').textContent = formattedTime;
 
     // Configurar botón agregar a calendario
-    document.getElementById('add-calendar-btn').addEventListener('click', function() {
+    addCalendarBtn.addEventListener('click', function() {
       addToCalendar(meeting.date, meeting.time);
     });
   }
+} else {
+  // Sin parámetros, mostrar versión genérica
+  meetingWithTime.style.display = 'none';
+  meetingWithoutTime.style.display = 'block';
+  addCalendarBtn.style.display = 'none';
 }
 
 function addToCalendar(dateStr, timeStr) {
